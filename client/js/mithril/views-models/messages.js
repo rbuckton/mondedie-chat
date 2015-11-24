@@ -90,6 +90,15 @@ messages.vm = (function() {
       });
     }
   };
+  // Get old messages list
+  vm.old = function(nbMsgDisplay) {
+    m.request({ method: 'GET', url: '/get/messages/old', data: {nbMsgDisplay:nbMsgDisplay, nbMsg:50}})
+      .then(function(list) {
+          vm.list.unshift(new messages.MessagesList(list));
+        }
+      )
+      .then(m.redraw)
+  };
   vm.initsockets = function() {
     vm.listen = (function () {
       // ==================== CHAT EVENTS ===================
@@ -99,6 +108,10 @@ messages.vm = (function() {
       socket.on('message', function(message) {
         vm.list.push(new messages.Message(message));
         m.redraw();
+      });
+      socket.on('old', function(nbMsgDisplay) {
+        console.log(nbMsgDisplay);
+        vm.old(nbMsgDisplay);
       });
       socket.on('remove_message', function(id) {
         vm.list.del(id)

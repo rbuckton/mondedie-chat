@@ -49,6 +49,31 @@ Messages.prototype.get = function(id) {
 }
 
 /*
+ * Retourne  entérieur en fonction du nombre affiché
+ */
+Messages.prototype.listOld = function(nbMsgDisplay, nbMsg) {
+  var self = this;
+  return this.db.zcardAsync('messages:listed')
+    .then(function(total) {
+      return self.db.zrangebyscoreAsync(['messages:listed', total - (nbMsgDisplay - nbMsg - 1), total])
+    })
+    .map(function(item) {
+     return self.db.hgetallAsync(item);
+    })
+    .map(function(message) {
+      if(!message.user) return message;
+      return self.db.hgetallAsync('users:profiles:' + message.user.toLowerCase())
+        .then(function(user) {
+          message.user = user;
+          return message;
+        });
+    })
+    .finally(function(messages) {
+      return messages;
+    });
+}
+
+/*
  * Retourne les 200 derniers messages
  */
 Messages.prototype.list = function() {

@@ -101,6 +101,14 @@ router.get('/get/messages', function(req, res, next) {
   });
 });
 
+router.get('/get/messages/old', function(req, res, next) {
+  session.settings(req, res, { shouldBeLogged:true }, function(settings) {
+    messages.listOld(req.body.nbMsgDisplay, req.body.nbMsg).then(function(list) {
+      return res.json({ messages:list });
+    });
+  });
+});
+
 router.delete('/delete/message', function(req, res, next) {
   session.settings(req, res, { shouldBeLogged:true }, function(settings) {
     messages.get(req.body.id).then(function(message) {

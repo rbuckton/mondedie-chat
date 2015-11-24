@@ -104,4 +104,13 @@ $(function() {
     }
   });
 
+  $('#content-messages').scroll(function (event) {
+    var scroll = $('#content-messages').scrollTop();
+    console.log(scroll);
+    if (scroll <= 0 ) {
+      console.log("Emit");
+      socket.emit('old', $('.message').length);
+    }
+  });
+
 });
