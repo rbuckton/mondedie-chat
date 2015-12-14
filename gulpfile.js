@@ -14,15 +14,26 @@ var sourcemaps = require('gulp-sourcemaps');
 var inject = require('gulp-inject');
 var runSequence = require('run-sequence');
 var del = require('del');
+var ts = require("gulp-typescript");
+var typescript = require("typescript");
+var merge = require("merge2");
+var path = require("path");
 
 // ########################### PATHS ###########################
 
 var bowerPath = 'client/bower';
 var jsPath = 'client/js';
+var tsPath = 'client/ts';
+var tsProject = ts.createProject(tsPath + '/tsconfig.json', { typescript: typescript });
 
 var jshintFiles = [
   'app.js', 'gulpfile.js', 'routes/*.js', 'libs/*.js',
   'models/*.js', 'client/js/**/*.js'
+];
+
+var tsFiles = [
+  // appTsFiles
+  tsPath + '/typings/**/*.ts'
 ];
 
 var jsFiles = [
@@ -69,6 +80,18 @@ gulp.task('bower', function() {
 
 gulp.task('clean-js', ['bower'], function () {
   return del(['public/js/*']);
+});
+
+gulp.task('ts', function () {
+  var unminified = filter(
+    ['**', '!**.min.js'],
+    { restore: true }
+  );
+  var tee = gulp.src(tsFiles, { base: tsPath })
+    .pipe(sourcemaps.init())
+    .pipe(ts(tsProject))
+  return tee.js
+    .pipe(gulp.dest('public/js'));
 });
 
 gulp.task('js', ['clean-js'], function() {

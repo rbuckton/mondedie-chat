@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "del": "^2.0.2",
+    "dotenv": "^1.2.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-bower": "0.0.10",
@@ -46,10 +47,12 @@
     "gulp-sass": "^2.0.4",
     "gulp-size": "^2.0.0",
     "gulp-sourcemaps": "^1.6.0",
+    "gulp-typescript": "^2.10.0",
     "gulp-uglify": "^1.4.1",
     "jshint-stylish": "^2.0.1",
+    "merge2": "^0.3.6",
     "run-sequence": "^1.1.4",
-    "dotenv": "^1.2.0"
+    "typescript": "^1.8.0-dev.20151214"
   },
   "engines": {
     "node": "0.12.x"
