@@ -25,4 +25,4 @@ users.view = function() {
 /**
  * Component mounting
  */
-m.mount(usersViewElement, { controller:users.controller, view:users.view });
+m.module(usersViewElement, { controller:users.controller, view:users.view });

@@ -23,7 +23,7 @@ messages.view = function(controller) {
  * DOM methods
  */
 function autoScroll(element) {
-  if(!document.getElementById('disable-auto-scroll').checked)
+  if(!(<HTMLInputElement>document.getElementById('disable-auto-scroll')).checked)
     messagesViewElement.scrollTop = element.scrollHeight;
 }
 
@@ -44,4 +44,4 @@ function removeButton(instance, controller, message) {
 /**
  * Component mounting
  */
-m.mount(messagesViewElement, { controller:messages.controller, view:messages.view });
+m.module(messagesViewElement, { controller:messages.controller, view:messages.view });

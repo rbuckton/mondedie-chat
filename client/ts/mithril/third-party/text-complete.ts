@@ -3,6 +3,14 @@
 
 $(function() {
 
+  interface UserStrategy extends TextCompleteStrategy {
+      users: any;
+  }
+
+  interface CommandStrategy extends TextCompleteStrategy {
+      commands: string[];
+  }
+
   var option = {
     placement: 'top'
   };
@@ -24,8 +32,8 @@ $(function() {
           }
         });
         if(term.length >= 3) {
-          x.sort(function(a, b) { return (a.length > b.length); });
-          y.sort(function(a, b) { return (a.length > b.length); });
+          x.sort(function(a, b) { return a.length - b.length; });
+          y.sort(function(a, b) { return a.length - b.length; });
           z.sort();
         }
         var results = x.concat(y).concat(z);
@@ -40,7 +48,7 @@ $(function() {
       index: 1
     },
     // Auto-complétion des pseudos
-    {
+    <UserStrategy>{
       users: users.vm.list.users(),
       match: /\B@(\w*)$/,
       search: function(term, callback) {
@@ -52,7 +60,7 @@ $(function() {
         }));
       },
       template: function(username) {
-        var user = $.grep(this.users, function(user) {
+        var user = $.grep<any>(this.users, function(user) {
           return user.name() === username;
         });
         return '<img class="emojione" src="' + user[0].avatar() + '"></img>' + username;
@@ -63,7 +71,7 @@ $(function() {
       index: 1
     },
     // Auto-complétion des commandes
-    {
+    <CommandStrategy>{
       commands: ['poke @', 'msg @', 'roll', 'afk on|off'],
       match: /^\/(\w*)$/,
       search: function(term, callback) {

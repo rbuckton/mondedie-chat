@@ -20,7 +20,7 @@ var typingViewElement   = document.getElementById("content-typing");
 /**
  * DOM elements
  */
-var textarea = document.getElementById('text-editor');
+var textarea = <HTMLTextAreaElement>document.getElementById('text-editor');
 
 /**
  * View Extending

@@ -34,7 +34,7 @@ $(function(){
           // toggle popup + closing after click
           smiley.toggleClass('opened');
           $(document).click(function(e) {
-            if (!$(e.target).parents().andSelf().is(button)) {
+            if (!$(e.target).parents().addBack().is(button)) {
               smiley.removeClass('opened');
             }
           });
@@ -51,12 +51,12 @@ $(function(){
   var isTyping = false;
 
   textarea.onkeydown = function(e) {
-    e = e || event;
+    e = e || <KeyboardEvent>event;
     if(e.keyCode === 13 && !e.shiftKey) {
       var display = window.getComputedStyle(
         document.getElementById('textcomplete-dropdown-1')
       ).getPropertyValue('display');
-      if(!document.getElementById('disable-enter-action').checked && display != 'block') {
+      if(!(<HTMLInputElement>document.getElementById('disable-enter-action')).checked && display != 'block') {
         e.preventDefault();
         clearTimeout(typingTimeout);
         typingTimeout = setTimeout(timeoutHandler, 0);

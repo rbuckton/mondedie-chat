@@ -6,7 +6,13 @@ var users = users || {};
  * Users component - view-model
  */
 users.vm = (function() {
-  var vm = {};
+  interface vm {
+      init?(): void;
+      list?: any;
+      listen?: any;
+  };
+
+  var vm: vm = {};
   vm.init = function() {
     vm.list = new users.UsersList();
     vm.listen = (function () {

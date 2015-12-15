@@ -6,7 +6,12 @@ var typing = typing || {};
  * Typing component - view-model
  */
 typing.vm = (function() {
-  var vm = {};
+  interface vm {
+      init?(): void;
+      list?: any;
+      listen?: any;
+  }
+  var vm: vm = {};
   vm.init = function() {
     vm.list = new typing.UsersList();
     vm.listen = (function () {

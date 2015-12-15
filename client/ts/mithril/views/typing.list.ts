@@ -37,4 +37,4 @@ function sentence(length) {
 /**
  * Component mounting
  */
-m.mount(typingViewElement, { controller:typing.controller, view:typing.view });
+m.module(typingViewElement, { controller:typing.controller, view:typing.view });

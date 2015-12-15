@@ -6,9 +6,20 @@ var messages = messages || {};
  * Messages component - view-model
  */
 messages.vm = (function() {
-  var vm = {};
+  interface vm {
+      list?: any;
+      listen?: any;
+      load?(): void;
+      loadmessages?(res): void;
+      send?(): void;
+      del?(id: any): void;
+      cmd?(message: string): void;
+      notification?(message: any): void;
+      initsockets?(): void;
+  }
+  var vm: vm = {};
   vm.load = function() {
-    var deferred = m.deferred();
+    var deferred = m.deferred<void>();
     vm.list = new messages.MessagesList();
     // Load initial messages list
     vm.loadmessages = function(res) {
@@ -110,7 +121,7 @@ messages.vm = (function() {
         });
       });
       socket.on('user_new', function(time, username) {
-        if(document.getElementById('disable-login-events').checked)
+        if((<HTMLInputElement>document.getElementById('disable-login-events')).checked)
           return;
         vm.list.push(new messages.Message({
           type:'message-bot',
@@ -120,7 +131,7 @@ messages.vm = (function() {
         m.redraw();
       });
       socket.on('user_disconnected', function(time, user) {
-        if(document.getElementById('disable-login-events').checked)
+        if((<HTMLInputElement>document.getElementById('disable-login-events')).checked)
           return;
         vm.list.push(new messages.Message({
           type:'message-bot',

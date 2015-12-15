@@ -29,4 +29,4 @@ function insertEmoji(pattern) {
 /**
  * Component mounting
  */
-m.mount(smileysViewElement, { controller:smileys.controller, view:smileys.view });
+m.module(smileysViewElement, { controller:smileys.controller, view:smileys.view });

@@ -1,5 +1,6 @@
 /* global m */
 'use strict';
+
 var messages = messages || {};
 
 /**
