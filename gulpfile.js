@@ -21,14 +21,18 @@ var path = require("path");
 
 // ########################### PATHS ###########################
 
+var serverTsProject = 'tsconfig.json';
 var bowerPath = 'client/bower';
 var jsPath = 'client/js';
 var tsPath = 'client/ts';
-var tsProject = tsPath + '/tsconfig.json';
+var appTsProject = tsPath + '/tsconfig.json';
 
 var jshintFiles = [
   'app.js', 'gulpfile.js', 'routes/*.js', 'libs/*.js',
   'models/*.js', 'client/js/**/*.js'
+];
+
+var serverTsFiles = [
 ];
 
 var dependJsFiles = [
@@ -43,7 +47,7 @@ var dependJsFiles = [
   bowerPath + '/slideout.js/dist/slideout.min.js',
 ];
 
-var tsFiles = [
+var appTsFiles = [
   tsPath + '/typings/**/*.ts',
   tsPath + '/app.ts',
   tsPath + '/mithril/thirdparty/*.ts',
@@ -90,7 +94,15 @@ gulp.task('clean-js', ['bower'], function () {
   return del(['public/js/*']);
 });
 
-gulp.task('ts', ['clean-js'], function () {
+gulp.task('ts:server', function () {
+  return gulp.src(serverTsFiles)
+    .pipe(sourcemaps.init())
+    .pipe(ts(ts.createProject(serverTsProject, { typescript: typescript }))).js
+    .pipe(sourcemaps.write('.', { includeContent: false }))
+    .pipe(gulp.dest('.'));
+});
+
+gulp.task('ts:client', ['clean-js'], function () {
   var unminified = filter(
     ['**', '!**.min.js'],
     { restore: true }
@@ -98,9 +110,9 @@ gulp.task('ts', ['clean-js'], function () {
   return merge([
     gulp.src(dependJsFiles)
       .pipe(sourcemaps.init()),
-    gulp.src(tsFiles, { base: tsPath })
+    gulp.src(appTsFiles, { base: tsPath })
       .pipe(sourcemaps.init())
-      .pipe(ts(ts.createProject(tsProject, { typescript: typescript, sortOutput: true }))).js
+      .pipe(ts(ts.createProject(appTsProject, { typescript: typescript, sortOutput: true }))).js
   ]).pipe(unminified)
     .pipe(uglify())
     .pipe(unminified.restore)
