@@ -24,20 +24,14 @@ var path = require("path");
 var bowerPath = 'client/bower';
 var jsPath = 'client/js';
 var tsPath = 'client/ts';
-var tsProject = ts.createProject(tsPath + '/tsconfig.json', { typescript: typescript });
+var tsProject = tsPath + '/tsconfig.json';
 
 var jshintFiles = [
   'app.js', 'gulpfile.js', 'routes/*.js', 'libs/*.js',
   'models/*.js', 'client/js/**/*.js'
 ];
 
-var tsFiles = [
-  // appTsFiles
-  tsPath + '/typings/**/*.ts'
-];
-
-var jsFiles = [
-  // dependJsFiles
+var dependJsFiles = [
   bowerPath + '/jquery/dist/jquery.min.js',
   bowerPath + '/bootstrap/dist/js/bootstrap.min.js',
   bowerPath + '/visibilityjs/lib/visibility.core.js',
@@ -47,7 +41,19 @@ var jsFiles = [
   bowerPath + '/jquery-textcomplete/dist/jquery.textcomplete.min.js',
   bowerPath + '/mithril/mithril.min.js',
   bowerPath + '/slideout.js/dist/slideout.min.js',
-  // appJsFiles
+];
+
+var tsFiles = [
+  tsPath + '/typings/**/*.ts',
+  tsPath + '/app.ts',
+  tsPath + '/mithril/thirdparty/*.ts',
+  tsPath + '/mithril/models/*.ts',
+  tsPath + '/mithril/views-models/*.ts',
+  tsPath + '/mithril/controllers/*.ts',
+  tsPath + '/mithril/views/*.ts'
+];
+
+var appJsFiles = [
   jsPath + '/app.js',
   jsPath + '/mithril/third-party/*.js',
   jsPath + '/mithril/models/*.js',
@@ -55,6 +61,8 @@ var jsFiles = [
   jsPath + '/mithril/controllers/*.js',
   jsPath + '/mithril/views/*.js'
 ];
+
+var jsFiles = dependJsFiles.concat(appJsFiles);
 
 var cssFiles = [
   'client/scss/app.scss',
@@ -82,15 +90,24 @@ gulp.task('clean-js', ['bower'], function () {
   return del(['public/js/*']);
 });
 
-gulp.task('ts', function () {
+gulp.task('ts', ['clean-js'], function () {
   var unminified = filter(
     ['**', '!**.min.js'],
     { restore: true }
   );
-  var tee = gulp.src(tsFiles, { base: tsPath })
-    .pipe(sourcemaps.init())
-    .pipe(ts(tsProject))
-  return tee.js
+  return merge([
+    gulp.src(dependJsFiles)
+      .pipe(sourcemaps.init()),
+    gulp.src(tsFiles, { base: tsPath })
+      .pipe(sourcemaps.init())
+      .pipe(ts(ts.createProject(tsProject, { typescript: typescript, sortOutput: true }))).js
+  ]).pipe(unminified)
+    .pipe(uglify())
+    .pipe(unminified.restore)
+    .pipe(concat({ path: 'app-ts.min.js', cwd: '' }))
+    .pipe(rev())
+    .pipe(sourcemaps.write('.'))
+    .pipe(size({title: "fichier app-ts.min.js"}))
     .pipe(gulp.dest('public/js'));
 });
 
